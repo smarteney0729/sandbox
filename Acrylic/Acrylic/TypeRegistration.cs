@@ -18,6 +18,7 @@ namespace Acrylic
         public Type AbstractType { get; private set; }
         public Type ConcreteType { get; private set; }
         public Lifetime LifetimeStrategy { get; private set; }
-
+        public IBuildServices Factory { get;  set; }
+        
     }
 }

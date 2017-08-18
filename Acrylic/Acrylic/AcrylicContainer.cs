@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace Acrylic
@@ -7,6 +8,7 @@ namespace Acrylic
     public class AcrylicContainer : IContainer, IDisposable
     {
         private ConcurrentDictionary<Type, TypeRegistration> _registry;
+       
         public AcrylicContainer()
         {
             _registry = new ConcurrentDictionary<Type, TypeRegistration>(Environment.ProcessorCount, 101);
@@ -21,7 +23,19 @@ namespace Acrylic
 
         public void Register<TAbstract, T>(Lifetime lifetimeManager) where T : TAbstract
         {
-            var registration = new TypeRegistration(typeof(TAbstract), typeof(T), Lifetime.Transient);
+            var registration = new TypeRegistration(typeof(TAbstract), typeof(T), lifetimeManager);
+            //Need to remove the template parameters from the factories but for now
+            //let's get things working
+            switch (lifetimeManager)
+            {
+                case Lifetime.Singleton:
+                    registration.Factory = new SingletonFactory<TAbstract, T>();
+                    break;
+                case Lifetime.Transient:
+                default:
+                    registration.Factory = new DefaultFactory<TAbstract, T>();
+                    break;
+            }
             _registry.AddOrUpdate(typeof(TAbstract), registration, (k, v) => registration);
         }
 
@@ -32,7 +46,23 @@ namespace Acrylic
 
         public object Resolve(Type type)
         {
-            throw new NotImplementedException();
+            if (type == null) throw new ArgumentNullException(nameof(type));
+            object instance = null;
+            if (_registry.ContainsKey(type))
+            {
+                var r = _registry[type];
+                var factory = r.Factory;
+                instance = factory.BuildUpService(r.ConcreteType,this);
+            }
+            else if(!type.IsAbstract)
+            {
+                instance = Activator.CreateInstance(type);
+            }
+            else
+            {
+                throw new TypeMappingUnavailableException($"{type.Name} is not mapped to a concrete implementation.");
+            }
+            return instance;
         }
 
         public bool IsRegistered(Type @type)

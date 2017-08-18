@@ -45,18 +45,17 @@ namespace AcrylicUnitTests
         [Fact]
         public void Container_allows_type_registration_multiple_times_last_is_winner()
         {
+            //There is a choice here to throw or to overwrite existing registration
+            //Need to pick one way of the other.  This test is just a declaration of 
+            //that choice and since it is somewhat passive agressive behavior
+            //if the something changes the test will fail.
+
             var container = new AcrylicContainer();
             container.Register<ITextStream, TextStream>();
             container.Register<ITextStream, AsciiStream>();
 
-            Assert.True(container.IsRegistered(typeof(ITextStream)));
-            //need to verify the container indeed holds registration for
-            //AsciiStream as the implementation of ITextStream 
-            //Need to implement Resolve first, or a Spy that can
-            //look at the internals of the container.
+            var instance = container.Resolve<ITextStream>();
+            Assert.IsType<AsciiStream>(instance);
         }
-
     }
-
-   
 }
