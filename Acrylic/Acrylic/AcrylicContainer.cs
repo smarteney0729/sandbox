@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 namespace Acrylic
 {
-    public class AcrylicContainer : IDisposable
+    public class AcrylicContainer : IContainer, IDisposable
     {
         private ConcurrentDictionary<Type, TypeRegistration> _registry;
         public AcrylicContainer()
@@ -12,21 +12,29 @@ namespace Acrylic
             _registry = new ConcurrentDictionary<Type, TypeRegistration>(Environment.ProcessorCount, 101);
         }
         /// <summary>
-        /// Registers the interface or type <typeparamref name="I"/> that is implemented by 
+        /// Registers the interface or type <typeparamref name="TAbstract"/> that is implemented by 
         /// <typeparamref name="T"/> in the container.
         /// </summary>
-        /// <typeparam name="I">An abstract type that the container uses to satisfy dependencies.</typeparam>
-        /// <typeparam name="T">A constructable concrete type that provides the abstraction <typeparamref name="I"/></typeparam>
-        public void Register<I, T>() where T:I,new()
+        /// <typeparam name="TAbstract">An abstract type that the container uses to satisfy dependencies.</typeparam>
+        /// <typeparam name="T">A constructable concrete type that provides the abstraction <typeparamref name="TAbstract"/></typeparam>
+        public void Register<TAbstract, T>() where T : TAbstract => Register<TAbstract, T>(Lifetime.Transient);
+
+        public void Register<TAbstract, T>(Lifetime lifetimeManager) where T : TAbstract
         {
-            Register<I, T>(Lifetime.Transient);
+            var registration = new TypeRegistration(typeof(TAbstract), typeof(T), Lifetime.Transient);
+            _registry.AddOrUpdate(typeof(TAbstract), registration, (k, v) => registration);
         }
 
-        public void Register<I, T>(Lifetime lifetimeManager) where T : I, new()
+        public TAbstract Resolve<TAbstract>()
         {
-            var registration = new TypeRegistration(typeof(I), typeof(T), Lifetime.Transient);
-            _registry.AddOrUpdate(typeof(I), registration, (k, v) => registration);
+            return (TAbstract)Resolve(typeof(TAbstract));
         }
+
+        public object Resolve(Type type)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool IsRegistered(Type @type)
         {
             if (type == null) throw new ArgumentNullException(nameof(@type));
