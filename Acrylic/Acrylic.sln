@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.14
+VisualStudioVersion = 15.0.26730.8
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Acrylic", "Acrylic\Acrylic.csproj", "{A1138B2A-C430-4A38-A10B-DB8BB08C19A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Acrylic", "Acrylic\Acrylic.csproj", "{A1138B2A-C430-4A38-A10B-DB8BB08C19A8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Unit Tests", "Unit Tests", "{E61FDF6C-32BD-49D1-9CBC-E8F13BC8B5A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcrylicUnitTests", "AcrylicUnitTests\AcrylicUnitTests.csproj", "{63A4483A-66F8-4A96-AD2B-6A1F3AD018FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AcrylicUnitTests", "AcrylicUnitTests\AcrylicUnitTests.csproj", "{63A4483A-66F8-4A96-AD2B-6A1F3AD018FE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AcrylicDemo", "WebApplication1\AcrylicDemo.csproj", "{02056509-91F6-41BA-B6AC-339EA28662DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,11 +25,18 @@ Global
 		{63A4483A-66F8-4A96-AD2B-6A1F3AD018FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{63A4483A-66F8-4A96-AD2B-6A1F3AD018FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{63A4483A-66F8-4A96-AD2B-6A1F3AD018FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02056509-91F6-41BA-B6AC-339EA28662DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02056509-91F6-41BA-B6AC-339EA28662DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02056509-91F6-41BA-B6AC-339EA28662DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02056509-91F6-41BA-B6AC-339EA28662DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{63A4483A-66F8-4A96-AD2B-6A1F3AD018FE} = {E61FDF6C-32BD-49D1-9CBC-E8F13BC8B5A8}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {56880087-2449-4F4C-BD08-84A5819F55F1}
 	EndGlobalSection
 EndGlobal
