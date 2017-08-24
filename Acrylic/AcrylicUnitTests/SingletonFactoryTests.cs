@@ -9,6 +9,19 @@ namespace AcrylicUnitTests
     public class SingletonFactoryTests
     {
         [Fact]
+        public void SingltonFactory_uses_provided_implementation_instance()
+        {
+            var implementation = new Calculator();
+            var builder = new SingletonFactory(implementation);
+            var container = Mock.Of<IContainer>();
+
+            var instance = builder.BuildUpService(typeof(Calculator), container);
+            Assert.NotNull(instance);
+            Assert.IsAssignableFrom<ICalculator>(instance);
+            Assert.Same(implementation, instance);
+        }
+
+        [Fact]
         public void Build_returns_instance_that_has_default_constructor()
         {
             var builder = new SingletonFactory();

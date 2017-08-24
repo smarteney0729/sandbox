@@ -10,14 +10,19 @@ namespace Acrylic
         private object _singleton = default;
         private ServiceFactory _factory;
 
-        public SingletonFactory()
+        public SingletonFactory():this(null)
+        {
+
+        }
+
+        public SingletonFactory(object implementation)
         {
             _factory = new ServiceFactory();
+            _singleton = implementation;
         }
 
         public object BuildUpService(Type service, IContainer container)
         {
-            //TODO: These are 2 seperate concerns, setting singleton and buildup
             if (_singleton != null) return _singleton;
             lock (_sync)
             {

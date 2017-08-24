@@ -41,6 +41,23 @@ namespace AcrylicUnitTests
         }
 
         [Fact]
+        public void Resolve_returns_provided_singleton_instance_for_each_invocation()
+        {
+            var calculator = new Calculator();
+            IContainer container = new AcrylicContainer();
+            container.Register<ICalculator>(calculator);
+
+            var instance1 = container.Resolve<ICalculator>();
+            var instance2 = container.Resolve<ICalculator>();
+
+            Assert.NotNull(instance1);
+            Assert.NotNull(instance2);
+            Assert.Same(instance1, instance2);
+            Assert.Same(calculator, instance1);
+            Assert.Same(calculator, instance2);
+        }
+
+        [Fact]
         public void Resolve_returns_different_instance_for_each_invocation_when_TransientLifetime()
         {
             IContainer container = new AcrylicContainer();

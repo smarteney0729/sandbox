@@ -43,6 +43,17 @@ namespace AcrylicUnitTests
         }
 
         [Fact]
+        public void Container_allows_registration_an_instance()
+        {
+            var instance = new ConcreteClass();
+            var container = new AcrylicContainer();
+            container.Register<BaseClass>(instance);
+
+            Assert.True(container.IsRegistered(typeof(BaseClass)));
+        }
+
+
+        [Fact]
         public void Container_allows_type_registration_multiple_times_last_is_winner()
         {
             //There is a choice here to throw or to overwrite existing registration
