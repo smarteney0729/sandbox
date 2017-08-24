@@ -12,6 +12,7 @@ namespace AcrylicUnitTests
 
     public class Calculator : ICalculator
     {
+        public Calculator() { }
         public T Add<T>(T a, T b) where T : struct
         {
             return a;
@@ -67,7 +68,13 @@ namespace AcrylicUnitTests
     }
 
     public interface IEmail { }
-    public class EmailService : IEmail { }
+    public class EmailService : IEmail {
+        public EmailService(StringBuilder builder)
+        {
+            //Just creating a dependency on an unregistered simple type.
+            Console.WriteLine(builder.ToString());
+        }
+    }
     public class Controller
     {
 

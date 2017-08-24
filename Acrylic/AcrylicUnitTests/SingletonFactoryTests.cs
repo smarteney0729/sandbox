@@ -1,6 +1,7 @@
 ﻿using Acrylic;
 using Moq;
 using System;
+using System.Text;
 using Xunit;
 
 namespace AcrylicUnitTests
@@ -13,7 +14,7 @@ namespace AcrylicUnitTests
             var builder = new SingletonFactory<ICalculator, Calculator>();
             var container = Mock.Of<IContainer>();
 
-            var instance = builder.buildUpInstance(container);
+            var instance = builder.BuildUpService(container);
             Assert.NotNull(instance);
             Assert.IsAssignableFrom<ICalculator>(instance);
         }
@@ -24,7 +25,7 @@ namespace AcrylicUnitTests
             var builder = new SingletonFactory<BaseClass, ConcreteClass>();
             var container = Mock.Of<IContainer>();
 
-            var instance = builder.buildUpInstance(container);
+            var instance = builder.BuildUpService(container);
             Assert.NotNull(instance);
             Assert.IsAssignableFrom<BaseClass>(instance);
         }
@@ -35,8 +36,8 @@ namespace AcrylicUnitTests
             var builder = new SingletonFactory<ICalculator, Calculator>();
             var container = Mock.Of<IContainer>();
 
-            var instance1 = builder.buildUpInstance(container);
-            var instance2 = builder.buildUpInstance(container);
+            var instance1 = builder.BuildUpService(container);
+            var instance2 = builder.BuildUpService(container);
 
             Assert.NotNull(instance1);
             Assert.NotNull(instance2);
@@ -48,10 +49,10 @@ namespace AcrylicUnitTests
         {
             var builder = new SingletonFactory<ViewController, ViewController>();
             var container = new Mock<IContainer>();
-            container.Setup(c => c.Resolve(typeof(IEmail))).Returns(new EmailService() as IEmail);
+            container.Setup(c => c.Resolve(typeof(IEmail))).Returns(new EmailService(new StringBuilder()) as IEmail);
             container.Setup(c => c.Resolve(typeof(ICalculator))).Returns(new Calculator() as ICalculator);
 
-            ViewController instance = builder.buildUpInstance(container.Object);
+            ViewController instance = builder.BuildUpService(container.Object);
 
             Assert.NotNull(instance);
             Assert.IsType<ViewController>(instance);
@@ -64,9 +65,9 @@ namespace AcrylicUnitTests
         {
             var builder = new SingletonFactory<ViewController, ViewController>();
             var container = new Mock<IContainer>();
-            container.Setup(c => c.Resolve(typeof(IEmail))).Returns(new EmailService() as IEmail);
+            container.Setup(c => c.Resolve(typeof(IEmail))).Returns(new EmailService(new StringBuilder()) as IEmail);
             container.Setup(c => c.Resolve(typeof(ICalculator))).Throws<InvalidOperationException>();
-            Assert.Throws<DepencencyNotSatisfiedException>(() => builder.buildUpInstance(container.Object));
+            Assert.Throws<DepencencyNotSatisfiedException>(() => builder.BuildUpService(container.Object));
         }
 
 
@@ -76,7 +77,7 @@ namespace AcrylicUnitTests
             var builder = new SingletonFactory<BaseClass, InternalConstructorClass>();
             var container = Mock.Of<IContainer>();
 
-            Assert.Throws<InvalidOperationException>(() => builder.buildUpInstance(container));            
+            Assert.Throws<InvalidOperationException>(() => builder.BuildUpService(container));            
         }
 
         [Theory]

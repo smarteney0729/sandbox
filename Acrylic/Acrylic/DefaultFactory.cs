@@ -4,11 +4,8 @@ using System.Reflection;
 
 namespace Acrylic
 {
-    public class SingletonFactory<T1, T2>: IBuildServices<T1>  where T2 : T1 
+    public class DefaultFactory<T1, T2> : IBuildServices<T1> where T2 : T1
     {
-        private object _sync = new object();
-        private T1 _singleton = default;
-
         public T1 BuildUpService(IContainer container)
         {
             return (T1)BuildUpService(typeof(T2), container);
@@ -16,21 +13,15 @@ namespace Acrylic
 
         public object BuildUpService(Type service, IContainer container)
         {
-            //TODO: These are 2 seperate concerns, setting singleton and buildup
-            if (_singleton != null) return _singleton;
-            lock (_sync)
-            {
-                if (_singleton == null)
-                {
-                    ConstructorInfo constructor;
-                    constructor = GetGreedyConstructor(service);
-                    //TODO: concreteClass does not have a public constructor.
-                    if (constructor == null) throw new InvalidOperationException($"No public constructors for implementation of {typeof(T1).Name}");
+            ConstructorInfo constructor;
+            constructor = GetGreedyConstructor(service);
 
-                    _singleton = CreateInstance(container, constructor);
-                }
-            }
-            return _singleton;
+            //TODO: concreteClass does not have a public constructor.
+            if (constructor == null) throw new InvalidOperationException($"No public constructors for implementation of {typeof(T1).Name}");
+
+            var instance = CreateInstance(container, constructor);
+
+            return instance;
         }
 
         public static T1 CreateInstance(IContainer container, ConstructorInfo constructor)
@@ -72,7 +63,6 @@ namespace Acrylic
 
             return instance;
         }
-
         public static ConstructorInfo GetGreedyConstructor(Type type)
         {
             ConstructorInfo greedyConstructor = null;
@@ -93,6 +83,6 @@ namespace Acrylic
             return greedyConstructor;
         }
 
-
+        
     }
 }
