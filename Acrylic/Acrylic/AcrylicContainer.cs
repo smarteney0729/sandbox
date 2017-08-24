@@ -23,21 +23,32 @@ namespace Acrylic
 
         public void Register<TAbstract, T>(Lifetime lifetimeManager) where T : TAbstract
         {
-            var registration = new TypeRegistration(typeof(TAbstract), typeof(T), lifetimeManager);
+            Register(typeof(TAbstract), typeof(T), lifetimeManager);
+        }
+
+        public void Register(Type abstractType, Type implementationType)
+        {
+            Register(abstractType, implementationType, Lifetime.Transient);
+        }
+
+        public void Register(Type abstractType, Type implementationType, Lifetime lifetime)
+        {
+            var registration = new TypeRegistration(abstractType, implementationType, lifetime);
             //Need to remove the template parameters from the factories but for now
             //let's get things working
-            switch (lifetimeManager)
+            switch (lifetime)
             {
                 case Lifetime.Singleton:
-                    registration.Factory = new SingletonFactory<TAbstract, T>();
+                    registration.Factory = new SingletonFactory();
                     break;
                 case Lifetime.Transient:
                 default:
-                    registration.Factory = new DefaultFactory<TAbstract, T>();
+                    registration.Factory = new ServiceFactory();
                     break;
             }
-            _registry.AddOrUpdate(typeof(TAbstract), registration, (k, v) => registration);
+            _registry.AddOrUpdate(abstractType, registration, (k, v) => registration);
         }
+
 
         public TAbstract Resolve<TAbstract>()
         {
@@ -75,5 +86,7 @@ namespace Acrylic
         {
             throw new NotImplementedException();
         }
+
+      
     }
 }

@@ -13,11 +13,12 @@ namespace Acrylic
         void Register<TAbstract, T>() where T : TAbstract;
 
         void Register<TAbstract, T>(Lifetime lifetimeManager) where T : TAbstract;
+        void Register(Type abstractType, Type implementationType);
+        void Register(Type abstractType, Type implementationType, Lifetime lifetime);
 
         TAbstract Resolve<TAbstract>();
         object Resolve(Type type);
 
         bool IsRegistered(Type @type);
-      
     }
 }

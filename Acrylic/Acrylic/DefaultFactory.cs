@@ -4,29 +4,24 @@ using System.Reflection;
 
 namespace Acrylic
 {
-    public class DefaultFactory<T1, T2> : IBuildServices<T1> where T2 : T1
+    public class ServiceFactory : IBuildServices
     {
-        public T1 BuildUpService(IContainer container)
-        {
-            return (T1)BuildUpService(typeof(T2), container);
-        }
-
         public object BuildUpService(Type service, IContainer container)
         {
             ConstructorInfo constructor;
             constructor = GetGreedyConstructor(service);
 
             //TODO: concreteClass does not have a public constructor.
-            if (constructor == null) throw new InvalidOperationException($"No public constructors for implementation of {typeof(T1).Name}");
+            if (constructor == null) throw new InvalidOperationException($"No public constructors for implementation of {service.Name}");
 
             var instance = CreateInstance(container, constructor);
 
             return instance;
         }
 
-        public static T1 CreateInstance(IContainer container, ConstructorInfo constructor)
+        public static object CreateInstance(IContainer container, ConstructorInfo constructor)
         {
-            T1 instance;
+            object instance;
             List<object> parameters = new List<object>();
 
             foreach (var p in constructor.GetParameters())
@@ -56,10 +51,9 @@ namespace Acrylic
                 }
             }
 
-
             //Intentionally outside of try catch.  If this throws.  It's different.
             //Obviously a seperate concern.
-            instance = (T1)constructor.Invoke(parameters.ToArray());
+            instance = constructor.Invoke(parameters.ToArray());
 
             return instance;
         }
@@ -82,7 +76,5 @@ namespace Acrylic
 
             return greedyConstructor;
         }
-
-        
-    }
+    } 
 }
