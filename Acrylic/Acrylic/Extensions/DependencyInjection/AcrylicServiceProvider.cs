@@ -48,7 +48,15 @@ namespace Acrylic.Extensions.DependencyInjection
             {
                 var lifetime = MapToAcrylicLifetime(s.Lifetime);
 
-                _container.Register(s.ServiceType, s.ImplementationType, s.ImplementationInstance, lifetime);
+                if (s.ImplementationFactory != null)
+                {
+                    _container.Register(s.ServiceType, new FactoryMethod(s.ImplementationFactory));
+                }
+                else
+                {
+                    _container.Register(s.ServiceType, s.ImplementationType, s.ImplementationInstance, lifetime);
+                }
+                
             }
         }
 

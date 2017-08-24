@@ -28,13 +28,20 @@ namespace Acrylic
         {
             Debug.Assert(@abstract != null);
             Debug.Assert(concrete != null || instance != null,"Implementation type or instance must be provided.");
-            //Debug.Assert(concrete == null || (concrete != null && @abstract.IsAssignableFrom(concrete)));
             Debug.Assert(instance == null || (instance != null && @abstract.IsAssignableFrom(instance.GetType())));
             AbstractType = @abstract;
             ConcreteType = concrete;
             Instance = instance;
             LifetimeStrategy = lifetime;
             CreateFactory();
+        }
+
+        public TypeRegistration(Type @abstract, IBuildServices factory)
+        {
+            Debug.Assert(@abstract != null);
+            Debug.Assert(factory != null);
+            AbstractType = @abstract;
+            Factory = factory;
         }
 
         public Type AbstractType { get; private set; }

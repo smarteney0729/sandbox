@@ -19,6 +19,8 @@ namespace Acrylic
         void Register(Type abstractType, object instance);
         void Register(Type abstractType, Type implementationType, object instance, Lifetime lifetime);
 
+        void Register(Type abstractType, IBuildServices factory);
+
         TAbstract Resolve<TAbstract>();
         object Resolve(Type type);
 
