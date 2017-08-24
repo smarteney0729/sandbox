@@ -1,5 +1,6 @@
 using Acrylic;
 using System;
+using System.Collections.Generic;
 using Xunit;
 
 namespace AcrylicUnitTests
@@ -41,6 +42,16 @@ namespace AcrylicUnitTests
 
             Assert.True(container.IsRegistered(typeof(BaseClass)));
         }
+
+        [Fact]
+        public void Container_allows_type_registration_of_Generic()
+        {
+            var container = new AcrylicContainer();
+            container.Register<IList<string>, List<string>>();
+
+            Assert.True(container.IsRegistered(typeof(IList<string>)));
+        }
+
 
         [Fact]
         public void Container_allows_registration_an_instance()

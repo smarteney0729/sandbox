@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace Acrylic.Services
 {
     /// <summary>
-    /// A 
+    /// 
     /// </summary>
     public class PrimeNumberProvider
     {

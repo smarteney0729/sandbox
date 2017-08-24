@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 
 namespace Acrylic
@@ -23,7 +24,7 @@ namespace Acrylic
         {
             object instance;
             List<object> parameters = new List<object>();
-
+            Debug.WriteLine($"Building - {constructor.DeclaringType.FullName}");
             foreach (var p in constructor.GetParameters())
             {
                 try
@@ -37,6 +38,7 @@ namespace Acrylic
                     }
                     else
                     {
+                        Debug.WriteLine($"Resolving Dependency: {p.ParameterType.Name}");
                         value = container.Resolve(p.ParameterType);
                     }
                     parameters.Add(value);
@@ -53,7 +55,10 @@ namespace Acrylic
 
             //Intentionally outside of try catch.  If this throws.  It's different.
             //Obviously a seperate concern.
+            Debug.WriteLine($"Creating new instance of: {constructor.DeclaringType.Name}");
             instance = constructor.Invoke(parameters.ToArray());
+            Debug.WriteLine($"Buildup Complete for: {constructor.DeclaringType.Name}");
+            Debug.WriteLine("------------------------------");
 
             return instance;
         }
