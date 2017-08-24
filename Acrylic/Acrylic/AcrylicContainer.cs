@@ -7,11 +7,11 @@ namespace Acrylic
 {
     public class AcrylicContainer : IContainer, IDisposable
     {
-        private ConcurrentDictionary<Type, TypeRegistration> _registry;
+        private ConcurrentDictionary<Guid, TypeRegistration> _registry;
        
         public AcrylicContainer()
         {
-            _registry = new ConcurrentDictionary<Type, TypeRegistration>(Environment.ProcessorCount, 101);
+            _registry = new ConcurrentDictionary<Guid, TypeRegistration>(Environment.ProcessorCount, 101);
         }
         /// <summary>
         /// Registers the interface or type <typeparamref name="TAbstract"/> that is implemented by 
@@ -23,21 +23,42 @@ namespace Acrylic
 
         public void Register<TAbstract, T>(Lifetime lifetimeManager) where T : TAbstract
         {
-            var registration = new TypeRegistration(typeof(TAbstract), typeof(T), lifetimeManager);
-            //Need to remove the template parameters from the factories but for now
-            //let's get things working
-            switch (lifetimeManager)
-            {
-                case Lifetime.Singleton:
-                    registration.Factory = new SingletonFactory<TAbstract, T>();
-                    break;
-                case Lifetime.Transient:
-                default:
-                    registration.Factory = new DefaultFactory<TAbstract, T>();
-                    break;
-            }
-            _registry.AddOrUpdate(typeof(TAbstract), registration, (k, v) => registration);
+            Register(typeof(TAbstract), typeof(T), lifetimeManager);
         }
+
+        public void Register(Type abstractType, Type implementationType)
+        {
+            Register(abstractType, implementationType, Lifetime.Transient);
+        }
+
+        public void Register(Type abstractType, Type implementationType, Lifetime lifetime)
+        {
+            var registration = new TypeRegistration(abstractType, implementationType, lifetime);
+            _registry.AddOrUpdate(abstractType.GUID, registration, (k, v) => registration);
+        }
+
+        public void Register<T>(T instance)
+        {
+            Register(typeof(T), instance);
+        }
+
+        public void Register(Type abstractType, object instance)
+        {
+            var registration = new TypeRegistration(abstractType, instance);
+            _registry.AddOrUpdate(abstractType.GUID, registration, (k, v) => registration);
+        }
+        public void Register(Type abstractType, Type implementationType, object instance, Lifetime lifetime)
+        {
+            var registration = new TypeRegistration(abstractType, implementationType, instance, lifetime);
+            _registry.AddOrUpdate(abstractType.GUID, registration, (k, v) => registration);
+        }
+
+        public void Register(Type abstractType, IBuildServices factory)
+        {
+            var registration = new TypeRegistration(abstractType, factory);
+            _registry.AddOrUpdate(abstractType.GUID, registration, (k, v) => registration);
+        }
+
 
         public TAbstract Resolve<TAbstract>()
         {
@@ -48,9 +69,9 @@ namespace Acrylic
         {
             if (type == null) throw new ArgumentNullException(nameof(type));
             object instance = null;
-            if (_registry.ContainsKey(type))
+            if (_registry.ContainsKey(type.GUID))
             {
-                var r = _registry[type];
+                var r = _registry[type.GUID];
                 var factory = r.Factory;
                 instance = factory.BuildUpService(r.ConcreteType,this);
             }
@@ -68,12 +89,14 @@ namespace Acrylic
         public bool IsRegistered(Type @type)
         {
             if (type == null) throw new ArgumentNullException(nameof(@type));
-            return _registry.ContainsKey(@type);
+            return _registry.ContainsKey(@type.GUID);
         }
 
         public void Dispose()
         {
             throw new NotImplementedException();
         }
+
+       
     }
 }
