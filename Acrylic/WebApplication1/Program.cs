@@ -12,10 +12,11 @@ namespace WebApplication1
         public static void Main(string[] args)
         {
             var host = new WebHostBuilder()
-                .UseKestrel()
+                .UseKestrel(options => { options.Limits.MaxConcurrentConnections = 10; })
+                .UseLibuv(options => options.ThreadCount = 4)
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
-                .UseStartup<Startup>()
+                .UseStartup<Startup>()                
                 .Build();
 
             host.Run();

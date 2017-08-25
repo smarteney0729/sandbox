@@ -51,5 +51,20 @@ namespace AcrylicUnitTests.Extensions.DependencyInjection
 
             Assert.Null(instance);
         }
+
+        [Fact]
+        public void GetService_returns_instance_when_implementation_is_registered()
+        {
+            var expected = new Calculator();
+            var container = new AcrylicContainer();
+            container.Register(typeof(ICalculator), typeof(Calculator), expected, Lifetime.Singleton);
+
+            IServiceProvider serviceProvider = new AcrylicServiceProvider(container);
+            
+            var instance = serviceProvider.GetService(typeof(ICalculator));
+
+            Assert.NotNull(instance);
+            Assert.Same(expected, instance);
+        }
     }
 }

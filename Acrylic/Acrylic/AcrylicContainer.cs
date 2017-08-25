@@ -34,6 +34,7 @@ namespace Acrylic
         public void Register(Type abstractType, Type implementationType, Lifetime lifetime)
         {
             var registration = new TypeRegistration(abstractType, implementationType, lifetime);
+            Debug.WriteLine(registration.ToString());
             _registry.AddOrUpdate(abstractType.FullName, registration, (k, v) => registration);
         }
 
@@ -45,17 +46,20 @@ namespace Acrylic
         public void Register(Type abstractType, object instance)
         {
             var registration = new TypeRegistration(abstractType, instance);
+            Debug.WriteLine(registration.ToString());
             _registry.AddOrUpdate(abstractType.FullName, registration, (k, v) => registration);
         }
         public void Register(Type abstractType, Type implementationType, object instance, Lifetime lifetime)
         {
             var registration = new TypeRegistration(abstractType, implementationType, instance, lifetime);
+            Debug.WriteLine(registration.ToString());
             _registry.AddOrUpdate(abstractType.FullName, registration, (k, v) => registration);
         }
 
         public void Register(Type abstractType, IBuildServices factory)
         {
             var registration = new TypeRegistration(abstractType, factory);
+            Debug.WriteLine(registration.ToString());
             _registry.AddOrUpdate(abstractType.FullName, registration, (k, v) => registration);
         }
 

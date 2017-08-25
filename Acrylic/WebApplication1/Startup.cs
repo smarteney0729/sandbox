@@ -8,6 +8,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Acrylic.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.Extensions.Options;
 
 namespace WebApplication1
 {
@@ -20,6 +22,7 @@ namespace WebApplication1
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
+
             Configuration = builder.Build();
         }
 
@@ -31,7 +34,9 @@ namespace WebApplication1
             
             // Add framework services.
             services.AddMvc();
+            services.AddOptions();
 
+            services.AddSingleton<IOptions<KestrelServerOptions>>(new OptionsWrapper<KestrelServerOptions>(new KestrelServerOptions()));
             services.AddSingleton<Acrylic.Services.PrimeNumberProvider>();
 
             var container = new Acrylic.AcrylicContainer();

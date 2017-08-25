@@ -64,5 +64,10 @@ namespace Acrylic
             }
             return Factory;
         }
+
+        public override string ToString()
+        {
+            return $"{AbstractType.FullName} - {ConcreteType?.Name} - {LifetimeStrategy} Instance:{Instance!=null} Factory:{Factory.GetType().Name}";
+        }
     }
 }
